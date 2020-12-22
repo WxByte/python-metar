@@ -1262,11 +1262,11 @@ class Metar(object):
                 lines.append("on runway %s, %s" % (name, low.string(reportunits)))
         return "; ".join(lines)
 
-    def present_weather(self):
+    def present_weather(self, return_code=False):
         """
         Return a textual description of the present weather.
         """
-        return self._weather(self.weather)
+        return self._weather(self.weather, return_code=return_code)
 
     def recent_weather(self):
         """
@@ -1274,11 +1274,12 @@ class Metar(object):
         """
         return self._weather(self.recent)
 
-    def _weather(self, weather):
+    def _weather(self, weather, return_code=False):
         """
         Return a textual description of weather.
         """
         text_list = []
+        code_list = []
         for weatheri in weather:
             (inteni, desci, preci, obsci, otheri) = weatheri
             text_parts = []
@@ -1322,7 +1323,13 @@ class Metar(object):
                 text_list.append(WEATHER_SPECIAL[code])
             else:
                 text_list.append(" ".join(text_parts))
-        return "; ".join(text_list)
+
+            code_list.append(code)
+
+        if return_code:
+            return " ".join(code_list)
+        else:
+            return "; ".join(text_list)
 
     def sky_conditions(self, sep="; "):
         """
